@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+build/
+dist/
+*.spec
+*.egg-info/
+
+# Recorded project output (project folders are named whatever you type in
+# the app, so these match by content/filename at any depth instead of by
+# folder name -- covers every file a project dir or "package for delivery"
+# zip can contain)
+recording.mp4
+guide.md
+Export_to_PDF.html
+Interactive_Wizard.html
+step_*.png
+extracted_*.png
+*.zip
+
+.DS_Store
+Thumbs.db

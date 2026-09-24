@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.bump.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: bump
+        name: Compute next version tag and push it
+        run: |
+          latest=$(git tag --list 'v*.*.*' | sort -V | tail -n1)
+          if [ -z "$latest" ]; then
+            new="v0.1.0"
+          else
+            IFS='.' read -r major minor patch <<< "${latest#v}"
+            new="v${major}.${minor}.$((patch + 1))"
+          fi
+          echo "tag=$new" >> "$GITHUB_OUTPUT"
+          git tag "$new"
+          git push origin "$new"
+
+  build:
+    needs: version
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            asset_name: AutoDoc-Windows.exe
+          - os: macos-latest
+            asset_name: AutoDoc-macOS.zip
+          - os: ubuntu-latest
+            asset_name: AutoDoc-Linux.tar.gz
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Generate macOS .icns from logo.png
+        if: runner.os == 'macOS'
+        run: |
+          mkdir logo.iconset
+          sips -z 512 512 assets/logo.png --out logo.iconset/icon_512x512.png
+          sips -z 256 256 assets/logo.png --out logo.iconset/icon_256x256.png
+          sips -z 128 128 assets/logo.png --out logo.iconset/icon_128x128.png
+          iconutil -c icns logo.iconset -o assets/logo.icns
+
+      - name: Build with PyInstaller
+        run: python scripts/build.py
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        run: Copy-Item dist/AutoDoc.exe ${{ matrix.asset_name }}
+        shell: pwsh
+
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: cd dist && zip -r ../${{ matrix.asset_name }} AutoDoc
+
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: tar -C dist -czf ${{ matrix.asset_name }} AutoDoc
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: ${{ matrix.asset_name }}
+
+  release:
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.version.outputs.tag }}
+          files: artifacts/*
