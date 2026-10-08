@@ -30,7 +30,7 @@ back to an OCR guess of the text near the click if the title isn't available. Yo
 always override either one by typing a custom caption in the post-recording review
 screen.
 
-### Optional: OCR step captions
+### Optional:- OCR step captions
 
 Install [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) (Windows),
 `brew install tesseract` (macOS), or `sudo apt install tesseract-ocr` (Linux) and make
