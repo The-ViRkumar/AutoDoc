@@ -19,7 +19,7 @@ Rules of the road
 | Phase | Name | Status |
 |---|---|---|
 | 0 | Preserve, inventory, fork, feasibility | **done** (published on branch `studio`) |
-| 1 | Get a baseline build running | todo |
+| 1 | Get a baseline build running | **in progress** — toolchain installed, native pieces built, app launches; test recording + branding check still to confirm |
 | 2 | Rebrand to AutoDoc | **done in code** — verified by typecheck, lint, docs/i18n checks and unit tests; visual check waits for the first build (see log, "Deferred leftovers") |
 | 3 | Guide capture core (steps from a recording) | todo |
 | 4 | Guide editor tab (review / reorder / edit / annotate) | todo |
