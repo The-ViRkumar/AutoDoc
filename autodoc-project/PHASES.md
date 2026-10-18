@@ -42,6 +42,9 @@ Deliverables
 - [x] OpenScreen cloned with full history; remote renamed `upstream`.
 - [x] `npm ci` succeeds (exit 0); `npx tsc --noEmit` passes (exit 0, ~12 s); a targeted Vitest file runs (`cursorTelemetryBuffer.test.ts`: 16/16). The full suite was deliberately not run (upstream: ~1670 tests, 1+ min — run once per task, at the end).
 - [x] Native-toolchain gap identified and written down (see log).
+- [x] GitHub wiring: `origin` = `The-ViRkumar/AutoDoc`, `upstream` = OpenScreen; new work on branch **`studio`** (old Python app stays on `main`).
+- [x] Clean single-commit history under the user's name (log D9); line-ending fix so the pre-commit hook passes on Windows (log D10).
+- [ ] User publishes branch `studio` from GitHub Desktop (Actions disabled first).
 
 Exit criteria: user has reviewed the three records and approved the toolchain choice for Phase 1.
 
