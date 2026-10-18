@@ -153,6 +153,21 @@ function lastSampleMs(samples: CursorTelemetryPoint[]): number {
 	return last;
 }
 
+/**
+ * The clicks of one take, as the guide builder wants them: drags dropped (issue #699) and the
+ * Stop-button click removed, with no editor timeline involved.
+ */
+export function recordedClicksForGuide(
+	telemetry: CursorTelemetryPoint[],
+): Array<{ timeMs: number; cx: number; cy: number }> {
+	const endMs = lastSampleMs(telemetry);
+	return visibleClicks(telemetry, endMs, endMs - STOP_CLICK_GUARD_MS).map((click) => ({
+		timeMs: click.timeMs,
+		cx: click.focus.cx,
+		cy: click.focus.cy,
+	}));
+}
+
 interface Box {
 	minX: number;
 	maxX: number;

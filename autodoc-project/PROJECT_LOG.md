@@ -125,3 +125,25 @@ Turn any workflow into a click-by-click guide: screen recording, auto-captioned 
 - **Removed old-name screenshots:** `docs/assets/{demo.gif,preview3.png,preview4.png}` and `public/{demo.gif,preview3.png,preview4.png}` (they showed the previous product's UI). The old monitor-and-camera logo remains only inside the preserved `legacy-python/`.
 - **README rewritten** (centered logo, badges, banner `docs/assets/autodoc-banner.svg`, honest status, what works vs planned, verified Windows build steps, layout, docs, license). **No other project names appear in it (D19)** per the user's request; the legally required credit stays in `LICENSE` and `THIRD-PARTY-NOTICES.md`, and the About box still says "Built on OpenScreen (MIT License)" (D14) — ask the user whether to drop that too.
 - Still upstream-identity (deferred, invisible to users): `build/com.getopenscreen.OpenScreen.metainfo.xml`, `build/flatpak/*`, `build.yml` Store job.
+
+### 2026-10-18 — Phase 1 closed
+- User ran `npm run dev` with the new logo/README commit (`567f2e41`, pushed): the app opens and a recording was made successfully. Phase 1 exit criteria met. The two open checks carried forward to **Phase 3**: (1) click-timestamp ↔ video alignment on this PC (hardware H.264 encoder shifted sample times by 325 ms in the native self-test), (2) the visual branding check, if not already seen.
+
+## Phase 3 — guide capture core (2026-10-18)
+
+Decisions (user-approved): window title/keys are Windows-first behind a small provider seam; typed keys are opt-in and off by default; step screenshots come from the recorded video, not a live grab.
+
+Built
+- `electron/guide/windowsProbe.ts`: PowerShell compiles a small C# poller (no new npm dependency) that streams foreground-window title changes and, only if enabled, key presses, stamped with epoch ms.
+- `electron/guide/session.ts`: starts/stops with the cursor recording, is shifted by the same offset as the cursor telemetry, writes `<video>.guide.json`. Hooked inside the existing wrappers in `electron/ipc/handlers.ts` (`startCursorRecording`, `stopCursorRecording`, `writePendingCursorTelemetry`, `shiftPendingCursorTelemetry`), so no call site changed.
+- `src/lib/guide/`: `buildSteps` (title = last window at or before the click; keys = typed since the previous click, space-separated, as in the Python app) and `parseGuideSidecar`.
+- `recordedClicksForGuide` exported from `zoom-suggestions.ts`: reuses the upstream drag filter and Stop-click guard.
+- `guide?: { steps }` optional field on `AxcutDocument` (no schema bump); `attachGuideSteps` in `recordingImport.ts` fills it on import, before the auto-zoom pass, with `history: false`.
+- Prefs `guideCaptureEnabled` (default on) and `guideKeysEnabled` (default off) with two rows in the Rec panel (Windows only). English copy is used in every locale until translated.
+
+Not done yet (deliberate)
+- Still-frame extraction (`step_NNN.png`) is left to Phase 4, where the thumbnails are first needed.
+- Pause ranges: the Windows native path has no pause compaction for telemetry either; revisit with the macOS provider.
+- macOS/Linux provider: steps there carry no title or keys.
+
+Open check: record a take and compare click time against the video frame (known ~325 ms encoder timing on this PC); add a compensation constant if it shows.

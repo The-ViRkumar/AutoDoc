@@ -28,6 +28,8 @@ import {
 	appendAutoZoomSuggestions,
 	collectAutoZoomSuggestionsForLatestDocument,
 } from "@/lib/ai-edition/timeline/apply-auto-zooms";
+import { recordedClicksForGuide } from "@/lib/ai-edition/timeline/zoom-suggestions";
+import { buildSteps } from "@/lib/guide/buildSteps";
 import { nativeBridgeClient } from "@/native/client";
 
 // Fresh recordings used to get cursor-dwell zooms on load (legacy editor
@@ -315,6 +317,29 @@ export async function maybeSaveFreshRecordingAutoZooms(
 }
 
 /**
+ * Turns the take's clicks into guide steps and stores them on the document. Runs once per
+ * import, before the auto-zoom pass, so that pass starts from a document that has them.
+ * Best effort: a missing or unreadable sidecar just means a guide with no steps.
+ */
+async function attachGuideSteps(screenPath: string): Promise<void> {
+	try {
+		const document = useProjectStore.getState().document;
+		if (!document || document.guide) return;
+		const telemetry = await nativeBridgeClient.cursor.getTelemetry(screenPath);
+		const clicks = recordedClicksForGuide(telemetry ?? []);
+		if (clicks.length === 0) return;
+		const sidecar = (await window.electronAPI?.readGuideSidecar?.(screenPath)) ?? null;
+		const steps = buildSteps(clicks, sidecar, createId);
+		const latest = useProjectStore.getState().document ?? document;
+		await useProjectStore
+			.getState()
+			.saveDocument({ ...latest, guide: { steps } }, { history: false });
+	} catch (error) {
+		console.warn("[recording] could not build guide steps:", error);
+	}
+}
+
+/**
  * Imports the recording the HUD handed over into a new project, and consumes the
  * hand-off so it is imported exactly once.
  *
@@ -377,6 +402,7 @@ export async function importPendingRecording(
 				history: false,
 			});
 	}
+	await attachGuideSteps(screenPath);
 	const latest = useProjectStore.getState().document;
 	if (latest) {
 		await maybeSaveFreshRecordingAutoZooms(latest);

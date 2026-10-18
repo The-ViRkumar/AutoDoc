@@ -178,6 +178,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	getSelectedSource: () => {
 		return ipcRenderer.invoke("get-selected-source");
 	},
+	readGuideSidecar: (videoPath: string) => {
+		return ipcRenderer.invoke("read-guide-sidecar", videoPath);
+	},
 	getRecordingPrefs: () => {
 		return ipcRenderer.invoke("get-recording-prefs");
 	},

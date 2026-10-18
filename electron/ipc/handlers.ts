@@ -26,6 +26,7 @@ import {
 } from "../../src/lib/ai-edition/schema";
 import type { CliSourcesResult } from "../../src/lib/cliContracts";
 import { pickRecordingSource } from "../../src/lib/cliSourcePick";
+import { parseGuideSidecar } from "../../src/lib/guide/buildSteps";
 import {
 	type NativeLinuxRecordingRequest,
 	portalCursorMode,
@@ -73,6 +74,13 @@ import { AppSettingsStore } from "../app-settings";
 import { createRunnerHost } from "../cli/runnerHost";
 import { hideCountdownOverlay } from "../countdownOverlay";
 import { isDiagnosticModeEnabled, mainLogBuffer } from "../diagnostics/main-log-buffer";
+import {
+	setGuideCapturePrefsReader,
+	shiftGuideCapture,
+	startGuideCapture,
+	stopGuideCapture,
+	writeGuideSidecar,
+} from "../guide/session";
 import { mainT } from "../i18n";
 import { getInstallChannel } from "../install-channel";
 import {
@@ -699,6 +707,10 @@ export interface RecordingPrefs {
 	hideDesktopIcons: boolean;
 	/** Whether a fresh take gets automatic zooms on import. Persisted; defaults on. */
 	autoZoomEnabled: boolean;
+	/** Guide: record window titles with the take. */
+	guideCaptureEnabled: boolean;
+	/** Guide: also record typed keys. Off unless the user opts in. */
+	guideKeysEnabled: boolean;
 }
 const defaultRecordingPrefs: RecordingPrefs = {
 	micEnabled: false,
@@ -712,6 +724,8 @@ const defaultRecordingPrefs: RecordingPrefs = {
 	cursorCaptureMode: "editable-overlay",
 	hideDesktopIcons: false,
 	autoZoomEnabled: true,
+	guideCaptureEnabled: true,
+	guideKeysEnabled: false,
 };
 
 // Cached source from the user's pick. Used by setDisplayMediaRequestHandler in main.ts for cursor-free capture.
@@ -1353,9 +1367,13 @@ async function startCursorRecording(recordingId?: number) {
 		console.error("Failed to start cursor recording session:", error);
 		cursorRecordingSession = null;
 	}
+	startGuideCapture(
+		typeof recordingId === "number" && Number.isFinite(recordingId) ? recordingId : undefined,
+	);
 }
 
 async function stopCursorRecording() {
+	stopGuideCapture();
 	if (!cursorRecordingSession) {
 		return;
 	}
@@ -1371,6 +1389,9 @@ async function stopCursorRecording() {
 }
 
 async function writePendingCursorTelemetry(videoPath: string) {
+	await writeGuideSidecar(videoPath).catch((error) =>
+		console.warn("[guide] could not write the guide sidecar:", error),
+	);
 	const telemetryPath = `${videoPath}.cursor.json`;
 	if (pendingCursorRecordingData && pendingCursorRecordingData.samples.length > 0) {
 		await fs.writeFile(telemetryPath, JSON.stringify(pendingCursorRecordingData, null, 2), "utf-8");
@@ -1410,6 +1431,7 @@ async function registerRecordingMediaLinks(
 }
 
 function shiftPendingCursorTelemetry(offsetMs: number) {
+	shiftGuideCapture(offsetMs);
 	if (!pendingCursorRecordingData || !Number.isFinite(offsetMs) || offsetMs <= 0) {
 		return;
 	}
@@ -2349,6 +2371,10 @@ export function registerIpcHandlers(
 			}
 		},
 	);
+	setGuideCapturePrefsReader(() => {
+		const prefs = recordingPrefs.get();
+		return { enabled: prefs.guideCaptureEnabled, captureKeys: prefs.guideKeysEnabled };
+	});
 
 	// Asked before every take starts. A disk that fills up mid-take used to be found only
 	// when the take was saved, and the take was lost with it.
@@ -2366,6 +2392,16 @@ export function registerIpcHandlers(
 			success: false,
 			error: mainT("dialogs", "recording.lowDiskSpace", { availableMb }),
 		};
+	});
+
+	// Only ever `<video>.guide.json`, so the renderer cannot use this to read other files.
+	ipcMain.handle("read-guide-sidecar", async (_, videoPath: unknown) => {
+		if (typeof videoPath !== "string" || !videoPath) return null;
+		try {
+			return parseGuideSidecar(JSON.parse(await fs.readFile(`${videoPath}.guide.json`, "utf-8")));
+		} catch {
+			return null;
+		}
 	});
 
 	ipcMain.handle("get-recordings-dir", () => getRecordingsDirInfo());

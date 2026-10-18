@@ -59,6 +59,8 @@ type ShimRecordingPrefs = {
 	systemAudioEnabled: boolean;
 	cursorCaptureMode: "editable-overlay" | "system";
 	autoZoomEnabled: boolean;
+	guideCaptureEnabled: boolean;
+	guideKeysEnabled: boolean;
 };
 const recordingPrefsStorageKey = "browser-shim-recording-prefs";
 let shimRecordingPrefs: ShimRecordingPrefs = {
@@ -71,6 +73,8 @@ let shimRecordingPrefs: ShimRecordingPrefs = {
 	systemAudioEnabled: false,
 	cursorCaptureMode: "editable-overlay",
 	autoZoomEnabled: true,
+	guideCaptureEnabled: true,
+	guideKeysEnabled: false,
 };
 const shimRecordingPrefsListeners = new Set<(prefs: ShimRecordingPrefs) => void>();
 const shimSelectedSourceListeners = new Set<(source: ShimDesktopSource | null) => void>();
@@ -183,6 +187,7 @@ function createShimElectronAPI() {
 			shimSelectedSourceListeners.add(callback);
 			return () => shimSelectedSourceListeners.delete(callback);
 		},
+		readGuideSidecar: () => Promise.resolve(null),
 		getRecordingPrefs: () => Promise.resolve(shimRecordingPrefs),
 		setRecordingPrefs: (patch: Partial<ShimRecordingPrefs>) => {
 			const next = { ...shimRecordingPrefs, ...patch };

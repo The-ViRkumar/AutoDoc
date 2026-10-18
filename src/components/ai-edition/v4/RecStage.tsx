@@ -3,7 +3,9 @@ import {
 	CameraOff,
 	ChevronDown,
 	FolderOpen,
+	Keyboard,
 	LayoutGrid,
+	ListChecks,
 	Loader2,
 	MicOff,
 	Mic as MicOn,
@@ -40,6 +42,8 @@ interface RecordingPrefsState {
 	cursorCaptureMode: "editable-overlay" | "system";
 	hideDesktopIcons: boolean;
 	autoZoomEnabled: boolean;
+	guideCaptureEnabled: boolean;
+	guideKeysEnabled: boolean;
 }
 
 const DEFAULT_PREFS: RecordingPrefsState = {
@@ -53,6 +57,8 @@ const DEFAULT_PREFS: RecordingPrefsState = {
 	cursorCaptureMode: "editable-overlay",
 	hideDesktopIcons: false,
 	autoZoomEnabled: true,
+	guideCaptureEnabled: true,
+	guideKeysEnabled: false,
 };
 
 /** The last segment of a Windows or POSIX path; a drive root keeps its letter. */
@@ -612,6 +618,51 @@ export function RecStage({
 								{prefs.autoZoomEnabled ? t("rec.on") : t("rec.off")}
 							</button>
 						</div>
+					) : null}
+
+					{/* Guide steps come from the click telemetry; the window title and typed keys come from
+					    a Windows-only probe (electron/guide), so the rows are offered there only. */}
+					{getPlatform() === "win32" ? (
+						<>
+							<div className={styles.recRow}>
+								<div id={rowLabelId("guideCapture")} className={styles.recRowLabel}>
+									<ListChecks size={15} />
+									{t("rec.guideCapture")}
+								</div>
+								<Tooltip content={t("rec.guideCaptureTip")} side="top">
+									<button
+										type="button"
+										data-testid="rec-guide-capture-button"
+										className={`${styles.recToggleBtn}${prefs.guideCaptureEnabled ? ` ${styles.on}` : ""}`}
+										aria-labelledby={rowLabelId("guideCapture")}
+										aria-pressed={prefs.guideCaptureEnabled}
+										onClick={() => updatePrefs({ guideCaptureEnabled: !prefs.guideCaptureEnabled })}
+									>
+										{prefs.guideCaptureEnabled ? t("rec.on") : t("rec.off")}
+									</button>
+								</Tooltip>
+							</div>
+							{prefs.guideCaptureEnabled ? (
+								<div className={styles.recRow}>
+									<div id={rowLabelId("guideKeys")} className={styles.recRowLabel}>
+										<Keyboard size={15} />
+										{t("rec.guideKeys")}
+									</div>
+									<Tooltip content={t("rec.guideKeysTip")} side="top">
+										<button
+											type="button"
+											data-testid="rec-guide-keys-button"
+											className={`${styles.recToggleBtn}${prefs.guideKeysEnabled ? ` ${styles.on}` : ""}`}
+											aria-labelledby={rowLabelId("guideKeys")}
+											aria-pressed={prefs.guideKeysEnabled}
+											onClick={() => updatePrefs({ guideKeysEnabled: !prefs.guideKeysEnabled })}
+										>
+											{prefs.guideKeysEnabled ? t("rec.on") : t("rec.off")}
+										</button>
+									</Tooltip>
+								</div>
+							) : null}
+						</>
 					) : null}
 
 					{desktopIconsHint ? (

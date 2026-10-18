@@ -70,6 +70,9 @@ interface Window {
 		onSelectedSourceChanged: (
 			callback: (source: ProcessedDesktopSource | null) => void,
 		) => () => void;
+		readGuideSidecar: (
+			videoPath: string,
+		) => Promise<import("../src/lib/guide/types").GuideSidecar | null>;
 		getRecordingPrefs: () => Promise<import("./ipc/handlers").RecordingPrefs>;
 		setRecordingPrefs: (
 			prefs: Partial<import("./ipc/handlers").RecordingPrefs>,

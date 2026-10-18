@@ -710,6 +710,18 @@ export const audioTrackSchema = endGteStart(
 // Round-trip through the migration must be lossless for now.
 export const legacyEditorSchema = z.object({}).passthrough().nullable().default(null);
 
+// Guide steps derived from a recording's clicks (autodoc-project/PHASES.md, Phase 3). Optional
+// and additive, like `shaderEffects`: a document without a guide carries no trace of one.
+export const guideStepSchema = z.object({
+	id: z.string().min(1),
+	timeMs: z.number().nonnegative(),
+	cx: z.number(),
+	cy: z.number(),
+	windowTitle: z.string().optional(),
+	keys: z.string().optional(),
+	caption: z.string().optional(),
+});
+
 const documentSchemaShape = z.object({
 	schemaVersion: z.literal(axcutSchemaVersion),
 	project: z.object({
@@ -743,6 +755,7 @@ const documentSchemaShape = z.object({
 	// Imported audio tracks (issue #350). Defaulted so every document written
 	// before this loads unchanged; an older build simply strips the key on save.
 	audioTracks: z.array(audioTrackSchema).default([]),
+	guide: z.object({ steps: z.array(guideStepSchema) }).optional(),
 	legacyEditor: legacyEditorSchema.nullable().default(null),
 });
 

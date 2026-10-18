@@ -30,6 +30,10 @@ export interface RecordingPreferences {
 	 * behaviour it gates has been on for every such installation.
 	 */
 	autoZoomEnabled: boolean;
+	/** Guide steps: record the foreground window title alongside the click telemetry. */
+	guideCaptureEnabled: boolean;
+	/** Guide steps: also record typed keys. Opt-in; passwords are typed keys too. */
+	guideKeysEnabled: boolean;
 }
 
 export const DEFAULT_RECORDING_PREFERENCES: RecordingPreferences = {
@@ -44,6 +48,8 @@ export const DEFAULT_RECORDING_PREFERENCES: RecordingPreferences = {
 	cursorCaptureMode: "editable-overlay",
 	hideDesktopIcons: false,
 	autoZoomEnabled: true,
+	guideCaptureEnabled: true,
+	guideKeysEnabled: false,
 };
 
 export interface RecordingSourceDescriptor {
@@ -123,6 +129,11 @@ function parseRecording(raw: RawSettings): RecordingPreferences {
 				: DEFAULT_RECORDING_PREFERENCES.cursorCaptureMode,
 		hideDesktopIcons: bool(raw.hideDesktopIcons, DEFAULT_RECORDING_PREFERENCES.hideDesktopIcons),
 		autoZoomEnabled: bool(raw.autoZoomEnabled, DEFAULT_RECORDING_PREFERENCES.autoZoomEnabled),
+		guideCaptureEnabled: bool(
+			raw.guideCaptureEnabled,
+			DEFAULT_RECORDING_PREFERENCES.guideCaptureEnabled,
+		),
+		guideKeysEnabled: bool(raw.guideKeysEnabled, DEFAULT_RECORDING_PREFERENCES.guideKeysEnabled),
 	};
 }
 
