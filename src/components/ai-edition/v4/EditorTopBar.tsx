@@ -17,7 +17,7 @@ import {
 	Undo2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import logoMark from "@/assets/openscreen-mark.png";
+import logoMark from "@/assets/autodoc-mark.png";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useI18n, useScopedT } from "@/contexts/I18nContext";
 import { useShortcuts } from "@/contexts/ShortcutsContext";
@@ -111,7 +111,7 @@ export function EditorTopBar({
 				<ProjectNameField title={projectTitle} onRename={actions.renameProject} />
 				{/* The saved state, as one dot right after the name it is about. Mounted with no
 				    project too, hidden, so loading one moves nothing. Save itself is in the
-				    OpenScreen menu, and on Ctrl+S. */}
+				    AutoDoc menu, and on Ctrl+S. */}
 				<span
 					className={styles.saveDot}
 					data-dirty={dirty}
@@ -377,13 +377,13 @@ function AppMenu({ actions }: { actions: TopBarActions }) {
 				className={`${styles.brand} ${styles.brandBtn}`}
 				aria-haspopup="menu"
 				aria-expanded={open}
-				aria-label="OpenScreen"
+				aria-label="AutoDoc"
 				onClick={() => setOpen((v) => !v)}
 			>
 				{/* Decorative: the wordmark beside it already names the app — and, being the
 				    button's only text, is also its accessible name. */}
 				<img src={logoMark} alt="" draggable={false} />
-				<span className={styles.name}>OpenScreen</span>
+				<span className={styles.name}>AutoDoc</span>
 				<ChevronDown size={13} className={styles.brandChevron} aria-hidden />
 			</button>
 			{open ? (

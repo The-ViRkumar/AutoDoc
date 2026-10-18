@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+	<title>AutoDoc</title>
+	<rect width="256" height="256" rx="58" fill="#0F1117"/>
+	<path d="M128 48L206 208H172L128 116L84 208H50Z" fill="#FFFFFF"/>
+	<circle cx="128" cy="180" r="17" fill="#00D9C0"/>
+</svg>

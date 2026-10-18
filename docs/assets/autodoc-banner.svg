@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-labelledby="t d">
+	<title id="t">AutoDoc: record, review steps, export a guide</title>
+	<desc id="d">Three steps: record your screen, review the captured steps, export a finished guide.</desc>
+	<rect width="1200" height="320" rx="28" fill="#0F1117"/>
+	<g transform="translate(36 16) scale(0.15625)">
+		<rect width="256" height="256" rx="58" fill="#171A26"/>
+		<path d="M128 48L206 208H172L128 116L84 208H50Z" fill="#FFFFFF"/>
+		<circle cx="128" cy="180" r="17" fill="#00D9C0"/>
+	</g>
+	<text x="90" y="47" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF">AutoDoc</text>
+	<text x="1164" y="46" text-anchor="end" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" fill="#8A8FA3">Record once. Get the guide.</text>
+
+	<rect x="30" y="78" width="300" height="214" rx="20" fill="#171A26" stroke="#2B2F42" stroke-width="1.5"/>
+	<rect x="124" y="106" width="112" height="72" rx="10" fill="none" stroke="#6C5CE7" stroke-width="5"/>
+	<path d="M180 178V192M156 194H204" fill="none" stroke="#6C5CE7" stroke-width="5" stroke-linecap="round"/>
+	<circle cx="180" cy="142" r="21" fill="none" stroke="#00D9C0" stroke-width="3" opacity="0.5"/>
+	<circle cx="180" cy="142" r="11" fill="#00D9C0"/>
+	<text x="180" y="230" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" fill="#ECEDF5">Record</text>
+	<text x="180" y="256" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="15" fill="#8A8FA3">Screen, window, audio</text>
+
+	<path d="M356 185H422M412 175L422 185L412 195" fill="none" stroke="#00D9C0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+	<rect x="450" y="78" width="300" height="214" rx="20" fill="#171A26" stroke="#2B2F42" stroke-width="1.5"/>
+	<rect x="546" y="125" width="4" height="12" fill="#FFFFFF" opacity="0.35"/>
+	<rect x="546" y="155" width="4" height="12" fill="#FFFFFF" opacity="0.35"/>
+	<circle cx="548" cy="116" r="9" fill="#FFFFFF"/>
+	<rect x="570" y="109" width="88" height="14" rx="7" fill="#FFFFFF"/>
+	<circle cx="548" cy="146" r="9" fill="#FFFFFF"/>
+	<rect x="570" y="139" width="68" height="14" rx="7" fill="#FFFFFF"/>
+	<circle cx="548" cy="176" r="9" fill="#00D9C0"/>
+	<rect x="570" y="169" width="96" height="14" rx="7" fill="#00D9C0"/>
+	<text x="600" y="230" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" fill="#ECEDF5">Review steps</text>
+	<text x="600" y="256" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="15" fill="#8A8FA3">Reorder, edit, redact</text>
+
+	<path d="M776 185H842M832 175L842 185L832 195" fill="none" stroke="#00D9C0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+	<rect x="870" y="78" width="300" height="214" rx="20" fill="#171A26" stroke="#2B2F42" stroke-width="1.5"/>
+	<path d="M982 108Q982 100 990 100H1028L1058 130V188Q1058 196 1050 196H990Q982 196 982 188Z" fill="#FFFFFF"/>
+	<path d="M1028 100V122Q1028 130 1036 130H1058Z" fill="#CFC8FA"/>
+	<rect x="996" y="146" width="48" height="8" rx="4" fill="#CFC8FA"/>
+	<rect x="996" y="162" width="36" height="8" rx="4" fill="#CFC8FA"/>
+	<rect x="996" y="178" width="44" height="8" rx="4" fill="#CFC8FA"/>
+	<text x="1020" y="230" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" fill="#ECEDF5">Export guide</text>
+	<text x="1020" y="256" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="15" fill="#8A8FA3">Markdown, HTML, zip</text>
+</svg>

@@ -341,7 +341,7 @@ describe("preset file format", () => {
 
 	it("rejects other formats and future versions", () => {
 		expect(() => parseStylePresetFile({ name: "x", appearance: appearance() })).toThrow(
-			/Not an OpenScreen style preset/,
+			/Not an AutoDoc style preset/,
 		);
 		expect(() =>
 			parseStylePresetFile({
