@@ -16,12 +16,12 @@ next stable version and are not patched on their own.
 **Please do not open a public issue, discussion or pull request for a security problem.**
 
 Report it privately through GitHub instead:
-[Report a vulnerability](https://github.com/getopenscreen/openscreen/security/advisories/new).
+[Report a vulnerability](https://github.com/The-ViRkumar/AutoDoc/security/advisories/new).
 This opens a private advisory that only you and the maintainers can see.
 
 A useful report includes:
 
-- the OpenScreen version and how it was installed (Microsoft Store, installer or package
+- the AutoDoc version and how it was installed (Microsoft Store, installer or package
   from the Releases page, Nix…)
 - the operating system and version
 - the steps to reproduce, or a proof of concept
@@ -29,7 +29,7 @@ A useful report includes:
 
 ## What happens next
 
-OpenScreen is maintained by volunteers, so these timelines are best-effort:
+AutoDoc is maintained by volunteers, so these timelines are best-effort:
 
 - an acknowledgement within 7 days
 - a first assessment, confirmed or not, within 14 days
@@ -40,7 +40,7 @@ Please keep the details private until the fix is released and the advisory is pu
 
 ## Scope
 
-In scope: the OpenScreen desktop app and everything this repository builds and ships with it,
+In scope: the AutoDoc desktop app and everything this repository builds and ships with it,
 including the native capture helpers, the Rust compositor and the auto-update mechanism.
 
 Out of scope: vulnerabilities in third-party dependencies that are already public upstream (a

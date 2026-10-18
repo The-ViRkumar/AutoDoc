@@ -1,6 +1,8 @@
 # Third-party notices
 
-OpenScreen is MIT licensed (see [LICENSE](LICENSE)). The installers additionally
+AutoDoc is MIT licensed (see [LICENSE](LICENSE)) and is built on OpenScreen (MIT,
+Copyright (c) Siddharth Vaddem and the OpenScreen contributors,
+<https://github.com/getopenscreen/openscreen>). The installers additionally
 bundle the third-party components below. This file ships inside the
 application resources and satisfies the attribution and source-offer obligations
 that come with them.
@@ -45,7 +47,7 @@ generated at build time and shipped beside this file.
 - **Used by**: the editor's streaming decoder, audio waveforms and caption audio
   extraction, which demux recordings in the renderer with it.
 - **License**: MIT for web-demuxer itself — Copyright (c) 2024 ForeverSc, under the
-  same permission notice as OpenScreen's own [LICENSE](LICENSE). The module also
+  same permission notice as AutoDoc's own [LICENSE](LICENSE). The module also
   contains FFmpeg code compiled to WebAssembly, under the **GNU Lesser General
   Public License v2.1 or later**, as web-demuxer's README states.
 - **Upstream**: the npm package `web-demuxer` 4.0.0,
@@ -170,7 +172,7 @@ generated at build time and shipped beside this file.
 - **Components**: parts of the zoom, motion-smoothing and custom-cursor code, and a
   few lines elsewhere, the native capture helpers included.
 - **License**: MIT — Copyright (c) 2026 webadderall, under the same permission
-  notice as OpenScreen's own [LICENSE](LICENSE). Published by Recordly under MIT,
+  notice as AutoDoc's own [LICENSE](LICENSE). Published by Recordly under MIT,
   before its relicensing in March 2026.
 
 ## Rust crates — compiled into the compositor addon
@@ -181,7 +183,7 @@ generated at build time and shipped beside this file.
   `crates/Cargo.lock`, across all platforms. Build-time crates (procedural macros,
   build scripts) are included even though none of their code ships.
 - **Licenses**: as each crate publishes them on crates.io. Where a crate offers a
-  choice, OpenScreen uses it under MIT or Apache-2.0. Each crate's licence text is
+  choice, AutoDoc uses it under MIT or Apache-2.0. Each crate's licence text is
   in its source package at the version listed.
 - **Full texts**: the licence and NOTICE files of every crate compiled into the
   addon are in `THIRD-PARTY-LICENSES.txt`, shipped beside this file.
@@ -263,7 +265,7 @@ generated at build time and shipped beside this file.
   `click-down.wav` is its `click3.wav` and `click-up.wav` its `switch12.wav`,
   both trimmed of leading silence and normalised to a 0.7 peak.
 
-## OpenScreen native helpers
+## Native helpers (from OpenScreen)
 
 `wgc-capture` (Windows Graphics Capture), the ScreenCaptureKit helper (macOS),
 the PipeWire helper (Linux) and the compositor addon are part of this repository
@@ -272,4 +274,4 @@ and are covered by [LICENSE](LICENSE).
 ---
 
 To report an omission or request source for anything bundled here, open an issue
-at <https://github.com/getopenscreen/openscreen/issues>.
+at <https://github.com/The-ViRkumar/AutoDoc/issues>.

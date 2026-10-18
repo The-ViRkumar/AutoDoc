@@ -74,13 +74,6 @@ import { offersStarPrompt, REPO_URL, storeReviewUrl } from "./star-prompt";
 import { registerSttIpc, shutdownStt } from "./stt";
 import { checkLatestRelease } from "./update-checker";
 import { loadUpdateMode, saveUpdateMode } from "./update-settings";
-import {
-	doNotTrack,
-	loadUsagePingState,
-	sendUsagePing,
-	setUsagePingEnabled,
-	USAGE_PING_INTERVAL_MS,
-} from "./usage-ping";
 import { configureWaylandSupport } from "./wayland";
 import {
 	createCountdownOverlayWindow,
@@ -91,6 +84,12 @@ import {
 } from "./windows";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/** AutoDoc has no release feed yet (Phase 9 of autodoc-project/PHASES.md). While this is false the
+ *  app never contacts any update server and shows no update UI: no "Check for Updates" entry, no
+ *  update-mode submenu, no background timer. Flip it once releases exist at
+ *  github.com/The-ViRkumar/AutoDoc, and point electron/update-checker.ts at that repo first. */
+const UPDATES_ENABLED = false;
 
 // CLI mode: `openscreen export|record|info|help ...` runs headless without
 // HUD/tray/menu. Parsed before any GUI side effects; see electron/cli/.
@@ -185,7 +184,7 @@ const isMac = process.platform === "darwin";
 const trayIconSize = isMac ? 16 : 24;
 
 // Tray Icons
-const defaultTrayIcon = getTrayIcon("openscreen.png", trayIconSize);
+const defaultTrayIcon = getTrayIcon("autodoc.png", trayIconSize);
 const recordingTrayIcon = getTrayIcon("rec-button.png", trayIconSize);
 
 function createWindow() {
@@ -267,7 +266,7 @@ function setupApplicationMenu() {
 			submenu: [
 				{
 					role: "about",
-					label: mainT("common", "actions.about") || "About OpenScreen",
+					label: mainT("common", "actions.about") || "About AutoDoc",
 				},
 				{
 					label: mainT("common", "actions.permissions") || "Permissions…",
@@ -304,7 +303,7 @@ function setupApplicationMenu() {
 				{ type: "separator" },
 				{
 					role: "hide",
-					label: mainT("common", "actions.hide") || "Hide OpenScreen",
+					label: mainT("common", "actions.hide") || "Hide AutoDoc",
 				},
 				{
 					role: "hideOthers",
@@ -440,7 +439,7 @@ function setupApplicationMenu() {
 						]
 					: []),
 				{
-					label: mainT("common", "actions.about") || "About OpenScreen",
+					label: mainT("common", "actions.about") || "About AutoDoc",
 					click: runAboutDialog,
 				},
 				{ type: "separator" as const },
@@ -495,7 +494,7 @@ let updateCheckAbort: AbortController | null = null;
  *  the install, i.e. after a 240 MB download has already competed with the encoder. Every
  *  surface is rebuilt when the flag flips (see `setupApplicationMenu`/`updateTrayMenu`). */
 function canOfferUpdateCheck(): boolean {
-	return offersUpdateCheck(getInstallChannel(), { recording: isRecording });
+	return UPDATES_ENABLED && offersUpdateCheck(getInstallChannel(), { recording: isRecording });
 }
 
 /** What the HUD is told at mount, and only the permanent half of the veto. The recording half
@@ -504,7 +503,7 @@ function canOfferUpdateCheck(): boolean {
  *  mount mid-take — and the HUD is rebuilt for every recording. The renderer applies the
  *  transient half itself; `check-for-updates` still enforces both. */
 function channelAllowsUpdateCheck(): boolean {
-	return !platformOwnsUpdates(getInstallChannel());
+	return UPDATES_ENABLED && !platformOwnsUpdates(getInstallChannel());
 }
 
 /** Message boxes must be owned by a window. The HUD is `alwaysOnTop` and `skipTaskbar`
@@ -574,7 +573,7 @@ async function presentAboutDialog() {
 	const heading = `${PRODUCT_NAME} ${facts.version}`;
 	const choice = await showMessageBox({
 		type: "info",
-		title: mainT("common", "actions.about") || "About OpenScreen",
+		title: mainT("common", "actions.about") || "About AutoDoc",
 		message: heading,
 		detail,
 		buttons: [
@@ -661,35 +660,13 @@ let currentUpdateMode: UpdateMode = "notify";
 let backgroundUpdateTimer: ReturnType<typeof setInterval> | null = null;
 
 function showUpdateSettingsMenu(): boolean {
-	return app.isPackaged && ownsItsUpdates(getInstallChannel());
+	return UPDATES_ENABLED && app.isPackaged && ownsItsUpdates(getInstallChannel());
 }
 
 function persistUpdateMode(mode: UpdateMode) {
 	currentUpdateMode = mode;
 	saveUpdateMode(app.getPath("userData"), mode);
 	updateTrayMenu(isRecording);
-}
-
-let usagePingEnabled = true;
-
-/** Hidden where the ping never runs anyway: a dev build, or DO_NOT_TRACK set. */
-function showUsagePingToggle(): boolean {
-	return getInstallChannel() !== "dev" && !doNotTrack(process.env);
-}
-
-function persistUsagePingEnabled(enabled: boolean) {
-	usagePingEnabled = enabled;
-	setUsagePingEnabled(app.getPath("userData"), enabled);
-	updateTrayMenu(isRecording);
-}
-
-function runUsagePing() {
-	void sendUsagePing(app.getPath("userData"), {
-		version: app.getVersion(),
-		os: process.platform,
-		arch: process.arch,
-		channel: getInstallChannel(),
-	});
 }
 
 async function downloadAndInstall(latestVersion: string) {
@@ -803,7 +780,7 @@ async function runBackgroundUpdateCheck() {
 }
 
 function startBackgroundUpdateTimer() {
-	if (backgroundUpdateTimer) return;
+	if (!UPDATES_ENABLED || backgroundUpdateTimer) return;
 	if (
 		!shouldStartBackgroundUpdateTimer({
 			isPackaged: app.isPackaged,
@@ -986,16 +963,6 @@ function updateTrayMenu(recording: boolean = false) {
 							},
 						]
 					: []),
-				...(showUsagePingToggle()
-					? [
-							{
-								label: mainT("common", "actions.usagePing") || "Send Anonymous Usage Count",
-								type: "checkbox" as const,
-								checked: usagePingEnabled,
-								click: () => persistUsagePingEnabled(!usagePingEnabled),
-							},
-						]
-					: []),
 				// The About box's other homes are menu-bar items, and no window this app creates
 				// shows a menu bar: the HUD is frameless (electron/windows.ts), and the editor and
 				// notes windows call setAutoHideMenuBar(true) on Windows and Linux. Without this
@@ -1004,10 +971,10 @@ function updateTrayMenu(recording: boolean = false) {
 				isMac
 					? {
 							role: "about" as const,
-							label: mainT("common", "actions.about") || "About OpenScreen",
+							label: mainT("common", "actions.about") || "About AutoDoc",
 						}
 					: {
-							label: mainT("common", "actions.about") || "About OpenScreen",
+							label: mainT("common", "actions.about") || "About AutoDoc",
 							click: runAboutDialog,
 						},
 				// Right next to About, and reachable without opening any window: this is the
@@ -1435,12 +1402,9 @@ appReady?.then(async () => {
 	// all (see auto-updater.ts getUpdater) — every real update path applies
 	// its settings lazily on first use.
 	currentUpdateMode = loadUpdateMode(app.getPath("userData"));
-	usagePingEnabled = loadUsagePingState(app.getPath("userData")).enabled;
 	createTray();
 	updateTrayMenu();
 	startBackgroundUpdateTimer();
-	runUsagePing();
-	setInterval(runUsagePing, USAGE_PING_INTERVAL_MS).unref();
 	configureAboutPanel();
 	setupApplicationMenu();
 	await ensureRecordingsDir();

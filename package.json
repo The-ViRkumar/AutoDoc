@@ -1,9 +1,9 @@
 {
 	"name": "openscreen",
 	"private": true,
-	"version": "2.1.1",
-	"description": "Record your screen and polish the demo",
-	"homepage": "https://getopenscreen.com/",
+	"version": "1.0.0",
+	"description": "Turn any workflow into a click-by-click guide: screen recording, captioned steps, translation and one-click export",
+	"homepage": "https://github.com/The-ViRkumar/AutoDoc",
 	"license": "MIT",
 	"type": "module",
 	"packageManager": "npm@10.9.4",
@@ -12,23 +12,27 @@
 		"npm": "10.9.4"
 	},
 	"author": {
-		"name": "Etienne Lescot",
-		"url": "https://github.com/EtienneLescot"
+		"name": "The.ViRkumar",
+		"url": "https://github.com/The-ViRkumar"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/getopenscreen/openscreen.git"
+		"url": "git+https://github.com/The-ViRkumar/AutoDoc.git"
 	},
 	"contributors": [
 		{
 			"name": "Siddharth Vaddem",
 			"url": "https://github.com/siddharthvaddem"
+		},
+		{
+			"name": "OpenScreen contributors",
+			"url": "https://github.com/getopenscreen/openscreen"
 		}
 	],
 	"maintainers": [
 		{
-			"name": "Etienne Lescot",
-			"url": "https://github.com/EtienneLescot"
+			"name": "The.ViRkumar",
+			"url": "https://github.com/The-ViRkumar"
 		}
 	],
 	"scripts": {
@@ -51,7 +55,6 @@
 		"build:native:compositor:linux": "node scripts/build-linux-compositor-addon.mjs",
 		"build:native:linux": "node scripts/build-linux-pipewire-helper.mjs",
 		"build:win": "npm run build:native:win && npm run fetch:ffmpeg && npm run fetch:onnxruntime && npm run stage:vcomp && npm run build:native:compositor && tsc && vite build && npm run licenses:generate && electron-builder --win --config.npmRebuild=false",
-		"build:win:store": "npm run build:native:win && npm run fetch:ffmpeg && npm run fetch:onnxruntime && npm run stage:vcomp && npm run build:native:compositor && tsc && vite build && npm run licenses:generate && electron-builder --win appx --config.npmRebuild=false",
 		"build:linux": "npm run fetch:ffmpeg:sdk && npm run build:native:linux && npm run fetch:onnxruntime && npm run build:native:compositor:linux && tsc && vite build && npm run licenses:generate && electron-builder --linux AppImage deb pacman rpm --config.npmRebuild=false",
 		"build:whisper-binaries": "bash scripts/build-whisper-stt.sh",
 		"test:whisper-stt": "node scripts/test-whisper-stt.mjs",

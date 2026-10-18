@@ -59,8 +59,9 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-conduct@getopenscreen.com.
+reported to the maintainer, who is responsible for enforcement, through a private
+message on GitHub (<https://github.com/The-ViRkumar>) or a private security advisory
+on this repository.
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

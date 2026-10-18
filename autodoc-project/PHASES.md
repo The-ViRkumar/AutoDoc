@@ -18,9 +18,9 @@ Rules of the road
 
 | Phase | Name | Status |
 |---|---|---|
-| 0 | Preserve, inventory, fork, feasibility | **in progress** (this document set) |
+| 0 | Preserve, inventory, fork, feasibility | **done** (published on branch `studio`) |
 | 1 | Get a baseline build running | todo |
-| 2 | Rebrand to AutoDoc | todo |
+| 2 | Rebrand to AutoDoc | **done in code** — verified by typecheck, lint, docs/i18n checks and unit tests; visual check waits for the first build (see log, "Deferred leftovers") |
 | 3 | Guide capture core (steps from a recording) | todo |
 | 4 | Guide editor tab (review / reorder / edit / annotate) | todo |
 | 5 | Guide export (MD / HTML / wizard / zip) | todo |
@@ -31,7 +31,7 @@ Rules of the road
 
 ---
 
-## Phase 0 — Preserve, inventory, fork, feasibility *(current)*
+## Phase 0 — Preserve, inventory, fork, feasibility *(done)*
 
 **Goal:** make it impossible to lose the old app, and know exactly what we're building on.
 
@@ -60,7 +60,7 @@ local unit tests + the browser-mode dev server for UI-only work in between.
 Deliverables: build recipe written into the log; a launched baseline (or CI artifact) with one
 successful test recording; the dev loop documented (typecheck, unit tests, UI-only mode).
 
-## Phase 2 — Rebrand to AutoDoc
+## Phase 2 — Rebrand to AutoDoc *(done in code — results in PROJECT_LOG.md, decisions D13–D17)*
 
 **Goal:** it *looks and behaves* like our product, and nothing phones home to upstream.
 

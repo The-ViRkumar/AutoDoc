@@ -711,7 +711,7 @@ export function createMediaTools(deps: MediaToolDeps): MediaTools {
 			{
 				description: STOP_RECORDING_DESCRIPTIONS[transport],
 				inputSchema: z.object({
-					title: z.string().optional().describe("The project's title in OpenScreen."),
+					title: z.string().optional().describe("The project's title in AutoDoc."),
 				}),
 				annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
 			},
@@ -1020,7 +1020,7 @@ export function createMediaTools(deps: MediaToolDeps): MediaTools {
 						.string()
 						.optional()
 						.describe(
-							"The project's title in OpenScreen. Default: the video's file name, or Untitled Project.",
+							"The project's title in AutoDoc. Default: the video's file name, or Untitled Project.",
 						),
 					videoPath: z
 						.string()

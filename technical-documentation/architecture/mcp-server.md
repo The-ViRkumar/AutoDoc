@@ -7,7 +7,7 @@ The same tools are served over two transports, by two different processes:
 | | In-app server (HTTP) | `openscreen mcp` (stdio) |
 |---|---|---|
 | Process | The running app (the GUI) | A process of its own, started by the client: the app's executable with `mcp` |
-| Setup | **AI settings → MCP server**: turn it on, copy the `claude mcp add` / `codex mcp add` command (it carries the token) | `claude mcp add openscreen -- <executable> mcp` ([executables](../../website/docs/cli.md#running-the-cli)) |
+| Setup | **AI settings → MCP server**: turn it on, copy the `claude mcp add` / `codex mcp add` command (it carries the token) | `claude mcp add openscreen -- <executable> mcp` ([executables](../../docs/cli.md#running-the-cli)) |
 | Auth | Bearer token, `127.0.0.1` only, Host/Origin check | None: the client launched the process with the user's rights |
 | Edits, recording, export | Off until the user turns on **MCP edits** | Always allowed |
 | Project open in the editor | Edited live through the editor, one undo step per call | The same while the app runs: the call is forwarded to it. With no app answering, refused ([the marker](#the-open-in-editor-marker)) |

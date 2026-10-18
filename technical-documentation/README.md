@@ -3,8 +3,8 @@
 Reference documentation for how OpenScreen is built. It describes the system **as it is on this
 branch** — not how it got here. Product direction lives in [`../ROADMAP.md`](../ROADMAP.md),
 day-to-day contributor rules in [`../AGENTS.md`](../AGENTS.md) and
-[`../CONTRIBUTING.md`](../CONTRIBUTING.md), and end-user documentation in
-[`../website/docs/`](../website/docs/).
+[`../CONTRIBUTING.md`](../CONTRIBUTING.md), and command-line documentation in
+[`../docs/cli.md`](../docs/cli.md).
 
 Organised by **type** — architecture (what the system is), engineering (how it is built and
 shipped), testing (how it is verified) — and within each type, by **subsystem**.

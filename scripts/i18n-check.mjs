@@ -103,8 +103,10 @@ function readBuilderLanguages() {
 		.map((s) => s.trim().replace(/^["']|["']$/g, ""))
 		.filter(Boolean);
 
+	// AutoDoc does not ship to the Microsoft Store, so electron-builder.json5 has no appx block;
+	// the appx comparison below is skipped when it is absent.
 	const appxBlock = objectBody(stripped, "appx");
-	if (!appxBlock) throw new Error("Could not find appx block in electron-builder.json5");
+	if (!appxBlock) return { electronLanguages, appxLanguages: null };
 	const appxLanguagesMatch = appxBlock.match(/"languages"\s*:\s*\[([\s\S]*?)\]/);
 	if (!appxLanguagesMatch)
 		throw new Error("Could not find appx.languages in electron-builder.json5");
@@ -176,8 +178,10 @@ function assertListsMatch(actual, expected, label) {
 }
 
 // 2. Check appx.languages matches SUPPORTED_LOCALES
-const expectedAppxLanguages = supportedLocales.map((l) => getPackagingTags(l).appx);
-assertListsMatch(appxLanguages, expectedAppxLanguages, "appx.languages");
+if (appxLanguages) {
+	const expectedAppxLanguages = supportedLocales.map((l) => getPackagingTags(l).appx);
+	assertListsMatch(appxLanguages, expectedAppxLanguages, "appx.languages");
+}
 
 // 3. Check electronLanguages matches SUPPORTED_LOCALES
 const expectedElectronLanguages = supportedLocales.flatMap((l) => getPackagingTags(l).electron);

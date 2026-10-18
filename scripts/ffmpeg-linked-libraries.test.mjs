@@ -1,10 +1,9 @@
 // `crates/compositor/build.rs` decides which ffmpeg shared libraries the native addon
-// imports. Six places have to agree with that list, and none of them is derived from it:
+// imports. Five places have to agree with that list, and none of them is derived from it:
 //
 //   - scripts/fetch-ffmpeg.mjs      vendors the Windows DLLs and decides when to skip
 //   - scripts/before-pack.cjs       fails the pack if one is missing (three OS tables)
 //   - scripts/build-linux-compositor-addon.mjs  copies + symbol-renames the sonames
-//   - nix/compositor-view.nix       builds symbols.map from a brace glob
 //
 // Drift is not a cosmetic problem. The addon is a cdylib, so a missing library does not
 // fail the link: it fails at `require()` with "undefined symbol: osff_avfilter_graph_alloc",
@@ -13,16 +12,10 @@
 // Every guard listed above passes in that state, because each one only knows the list it
 // was written with.
 //
-// This test derives the truth from build.rs and checks the other five against it, so
+// This test derives the truth from build.rs and checks the other four against it, so
 // linking a seventh library fails here instead of in a user's installer. It reads source
 // text: before-pack.cjs and fetch-ffmpeg.mjs both do work at import time, and the property
 // under test is a property of the literal lists anyway.
-//
-// The nix derivation is the reason this file exists rather than an assertion inside
-// before-pack.test.mjs: `.github/workflows/nix-build.yml` does not run on pull requests
-// and there is no nix on the Windows dev box, so nix/compositor-view.nix reaches main with
-// no pre-merge signal at all. A text assertion is not `nix build`, but it does catch the
-// one mistake that has actually happened.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -70,18 +63,6 @@ describe("the ffmpeg libraries the compositor links", () => {
 		).not.toBeNull();
 		const sonames = [...table[1].matchAll(/"lib([a-z]+)\.so\.\d+"/g)].map((match) => match[1]);
 		expect([...sonames].sort()).toEqual([...linked].sort());
-	});
-
-	it("is staged and symbol-renamed by the nix derivation", () => {
-		// `for lib in ${ffmpegLgpl.lib}/lib/lib{avformat,…}.so.*` — the brace glob feeds
-		// both the copy into $stage/lib and the symbols.map the addon is linked against.
-		// A name missing here links against nixpkgs' un-renamed copy, and the
-		// installPhase leak check only flags symbols WITHOUT the osff_ prefix, so it
-		// passes either way.
-		const source = read("nix/compositor-view.nix");
-		const glob = source.match(/\/lib\/lib\{([a-z,]+)\}\.so\.\*/);
-		expect(glob, "nix/compositor-view.nix no longer globs the ffmpeg sonames").not.toBeNull();
-		expect(glob[1].split(",").sort()).toEqual([...linked].sort());
 	});
 
 	describe("is required by before-pack.cjs", () => {
